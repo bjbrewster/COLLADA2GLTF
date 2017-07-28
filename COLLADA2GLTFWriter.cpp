@@ -840,7 +840,7 @@ namespace GLTF
                     nodeTransforms.push_back(transformation->clone());
                 }
             }
-            // Write out any remaining transforms 
+            // Write out any remaining transforms
             matrix = COLLADABU::Math::Matrix4::IDENTITY;
             if (nodeTransforms.size() > 0) {
                 matrix = getFlattenedTransform(nodeTransforms);
@@ -883,11 +883,16 @@ namespace GLTF
         {
             const COLLADAFW::Mesh* mesh = (COLLADAFW::Mesh*)geometry;
             std::string meshUID = geometry->getUniqueId().toAscii();
+
             if (this->_asset->containsValueForUniqueId(meshUID) == false) {
                 shared_ptr<GLTFMesh> cvtMesh = convertOpenCOLLADAMesh((COLLADAFW::Mesh*)mesh, this->_asset.get());
                 if (cvtMesh != nullptr) {
+                    printf("COLLADA2GLTFWriter::writeGeometry mesh good\n");
+
                     this->_asset->root()->createObjectIfNeeded(kMeshes)->setValue(cvtMesh->getID(), cvtMesh);
                     this->_asset->setValueForUniqueId(meshUID, cvtMesh);
+                } else {
+                    printf("COLLADA2GLTFWriter::writeGeometry mesh bad\n");                    
                 }
             }
         }
